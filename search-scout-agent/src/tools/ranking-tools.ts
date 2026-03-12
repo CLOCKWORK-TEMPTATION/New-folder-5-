@@ -133,7 +133,7 @@ function computeRecencyScore(publishDate?: string): number {
  * يتضمن معلومات عن المحركات التي أرجعته.
  */
 export const deduplicateResults = tool(
-  async ({ rawResultsJson }) => {
+  async ({ rawResultsJson }: { rawResultsJson: string }) => {
     // ─── تحليل المدخلات ───
     let rawResults: RawSearchResult[];
     try {
@@ -258,7 +258,13 @@ export const deduplicateResults = tool(
  * - حداثة المحتوى
  */
 export const scoreAndRankResults = tool(
-  async ({ deduplicatedResultsJson, searchTopic }) => {
+  async ({
+    deduplicatedResultsJson,
+    searchTopic,
+  }: {
+    deduplicatedResultsJson: string;
+    searchTopic: string;
+  }) => {
     // ─── تحليل المدخلات ───
     let inputData: {
       deduplicated: Array<
@@ -399,7 +405,15 @@ export const scoreAndRankResults = tool(
  * - توليد ملخص وصفي للتغطية (الجوانب المغطاة والناقصة)
  */
 export const filterAndFinalize = tool(
-  async ({ scoredResultsJson, maxResults, excludedDomainsJson }) => {
+  async ({
+    scoredResultsJson,
+    maxResults,
+    excludedDomainsJson,
+  }: {
+    scoredResultsJson: string;
+    maxResults: number;
+    excludedDomainsJson?: string;
+  }) => {
     // ─── تحليل النتائج المُسجَّلة ───
     let inputData: {
       scored: RankedSearchResult[];

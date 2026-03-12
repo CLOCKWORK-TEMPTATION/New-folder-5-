@@ -17,7 +17,21 @@
  * - Middleware قابل للتوسيع
  * - interruptOn للتفاعل البشري عند الحاجة
  */
-import "dotenv/config";
+import dotenv from "dotenv";
+import { resolve, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const rootEnvPath = resolve(__dirname, "../../.env");
+const rootEnvResult = dotenv.config({ path: rootEnvPath, override: true });
+
+if (rootEnvResult.error) {
+  throw new Error(
+    `Missing root environment file at ${rootEnvPath}. This agent reads configuration from the repository root .env only.`,
+  );
+}
+
 import {
   createDeepAgent,
   StateBackend,
@@ -27,8 +41,7 @@ import {
 } from "deepagents";
 import { ChatAnthropic } from "@langchain/anthropic";
 import { ChatOpenAI } from "@langchain/openai";
-import { MemorySaver } from "@langchain/langgraph";
-import { InMemoryStore } from "@langchain/langgraph-checkpoint";
+import { MemorySaver, InMemoryStore } from "@langchain/langgraph-checkpoint";
 import { tool } from "langchain";
 import { z } from "zod";
 
@@ -51,6 +64,28 @@ import type {
   BackendType,
 } from "./types/index.js";
 import { parseEnvelope } from "./types/adapter.js";
+
+type AgentTodo = {
+  status?: string;
+  description?: string;
+};
+
+type AgentMessage = {
+  content: unknown;
+};
+
+type SearchScoutRunResult = {
+  messages: AgentMessage[];
+  todos?: AgentTodo[];
+  files?: Record<string, unknown>;
+};
+
+export interface ExecutedSearchResult {
+  messages: AgentMessage[];
+  todos?: AgentTodo[];
+  files?: Record<string, unknown>;
+  finalMessage: unknown;
+}
 
 // ─────────────────────────────────────────────
 // أدوات المستوى الرئيسي (Main Agent Tools)
@@ -165,14 +200,30 @@ function createModel(provider?: ModelProvider, modelName?: string) {
     "anthropic";
 
   if (selectedProvider === "openai") {
+    const apiKey = process.env.OPENAI_API_KEY?.trim();
+    if (!apiKey) {
+      throw new Error(
+        "Missing OPENAI_API_KEY in the repository root .env file.",
+      );
+    }
+
     return new ChatOpenAI({
+      apiKey,
       model: modelName || "gpt-4o",
       temperature: 0,
       maxTokens: 8192,
     });
   }
 
+  const apiKey = process.env.ANTHROPIC_API_KEY?.trim();
+  if (!apiKey) {
+    throw new Error(
+      "Missing ANTHROPIC_API_KEY in the repository root .env file.",
+    );
+  }
+
   return new ChatAnthropic({
+    apiKey,
     model: modelName || "claude-sonnet-4-20250514",
     temperature: 0,
     maxTokens: 8192,
@@ -226,7 +277,9 @@ function createBackend(type: BackendType, rootDir?: string) {
  * - أدوات على المستوى الرئيسي
  * - Model override لكل وكيل فرعي
  */
-export function createSearchScoutAgent(config?: Partial<AgentConfig>) {
+export function createSearchScoutAgent(
+  config?: Partial<AgentConfig>,
+): ReturnType<typeof createDeepAgent> {
   const model = createModel(config?.provider, config?.modelName);
 
   // إعداد Backend حسب التكوين
@@ -276,8 +329,8 @@ export function createSearchScoutAgent(config?: Partial<AgentConfig>) {
  */
 export async function executeSearch(
   plan: SearchPlan,
-  config?: Partial<AgentConfig>
-) {
+  config?: Partial<AgentConfig>,
+): Promise<ExecutedSearchResult> {
   const agent = createSearchScoutAgent(config);
 
   const prompt = buildSearchPrompt(plan);
@@ -287,10 +340,14 @@ export async function executeSearch(
     ? { configurable: { thread_id: config.threadId } }
     : undefined;
 
-  const result = await agent.invoke(
-    { messages: [{ role: "user", content: prompt }] },
-    invokeConfig
-  );
+  const result = (invokeConfig
+    ? await agent.invoke(
+        { messages: [{ role: "user", content: prompt }] },
+        invokeConfig,
+      )
+    : await agent.invoke({
+        messages: [{ role: "user", content: prompt }],
+      })) as SearchScoutRunResult;
 
   return {
     messages: result.messages,
@@ -429,6 +486,9 @@ async function readEnvelopeInput(): Promise<unknown | null> {
   const fromArg = process.argv.find((arg) => arg.startsWith("--envelope-path="));
   if (fromArg) {
     const path = fromArg.split("=")[1];
+    if (!path) {
+      throw new Error("Missing value for --envelope-path.");
+    }
     const fs = await import("node:fs/promises");
     const text = await fs.readFile(path, "utf-8");
     return JSON.parse(text);

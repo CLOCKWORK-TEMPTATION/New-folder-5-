@@ -19,17 +19,22 @@ function buildFetchedDocument(params: {
   publishDate?: string | null;
   binaryEncoding?: "base64";
 }): FetchedDocument {
-  return {
+  const fetchedDocument: FetchedDocument = {
     source_url: params.url,
     author: params.author ?? null,
     publish_date: params.publishDate ?? null,
     access_date: new Date().toISOString(),
     content_type: params.contentType,
     raw_content: params.rawContent,
-    binary_encoding: params.binaryEncoding,
     retrieval_mode: params.retrievalMode,
     title: params.title ?? null,
   };
+
+  if (params.binaryEncoding) {
+    fetchedDocument.binary_encoding = params.binaryEncoding;
+  }
+
+  return fetchedDocument;
 }
 
 export const fetchWebpageTool = tool(

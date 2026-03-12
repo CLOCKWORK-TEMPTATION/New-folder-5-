@@ -36,8 +36,9 @@ import {
   researchContextSchema,
 } from "./schemas.js";
 
-function createOpenAiModel(model: string, temperature: number) {
+function createOpenAiModel(model: string, temperature: number, apiKey: string) {
   return new ChatOpenAI({
+    apiKey,
     model,
     temperature,
   });
@@ -56,22 +57,27 @@ export function createResearchEvaluationAgent() {
   const coordinatorModel = createOpenAiModel(
     settings.coordinatorModel,
     settings.coordinatorTemperature,
+    settings.openAiApiKey,
   );
   const researchModel = createOpenAiModel(
     settings.researchModel,
     settings.subagentTemperature,
+    settings.openAiApiKey,
   );
   const verifierModel = createOpenAiModel(
     settings.verifierModel,
     settings.subagentTemperature,
+    settings.openAiApiKey,
   );
   const extractorModel = createOpenAiModel(
     settings.extractorModel,
     settings.subagentTemperature,
+    settings.openAiApiKey,
   );
   const detectorModel = createOpenAiModel(
     settings.detectorModel,
     settings.subagentTemperature,
+    settings.openAiApiKey,
   );
 
   const { internetSearch } = createSearchTools();

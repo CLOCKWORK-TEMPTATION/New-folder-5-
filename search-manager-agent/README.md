@@ -18,9 +18,9 @@
 # تثبيت المتطلبات
 pip install -r requirements.txt
 
-# إعداد متغيرات البيئة
-cp .env.example .env
-# ثم أضف OPENAI_API_KEY في .env
+# إعداد متغيرات البيئة من الجذر
+# استخدم الملف الموحد في جذر المستودع:
+# ..\.env
 ```
 
 ## الاستخدام
@@ -65,9 +65,9 @@ DeepResearcher (يحلل ويكتشف الثغرات)
 
 | المتغير | الوصف | الافتراضي |
 |---------|-------|-----------|
-| `OPENAI_API_KEY` | مفتاح OpenAI API | مطلوب |
-| `ANTHROPIC_API_KEY` | مفتاح Anthropic API | اختياري |
-| `MODEL_NAME` | اسم النموذج المستخدم | `gpt-4o` |
+| `OPENAI_API_KEY` | مفتاح OpenAI API من ملف البيئة في الجذر | مطلوب |
+| `ANTHROPIC_API_KEY` | مفتاح Anthropic API من ملف البيئة في الجذر | اختياري |
+| `MODEL_NAME` | اسم النموذج المستخدم من ملف البيئة في الجذر | `gpt-4o` |
 
 ## بنية الملفات
 
@@ -87,7 +87,7 @@ search-manager-agent/
 │       ├── __init__.py
 │       └── manager_agent.py  # تعريف الفريق والوكلاء
 ├── requirements.txt
-├── .env.example
+├── .env.example            # ملف إرشادي فقط - التشغيل يعتمد على .env في الجذر
 └── README.md
 ```
 

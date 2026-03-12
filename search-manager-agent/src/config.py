@@ -1,11 +1,28 @@
 import os
-from dotenv import load_dotenv
+from pathlib import Path
+from dotenv import dotenv_values
 
-load_dotenv()
+_root_env = Path(__file__).resolve().parent.parent.parent / ".env"
+if not _root_env.exists():
+    raise FileNotFoundError(
+        f"Missing root environment file at {_root_env}. This agent reads configuration from the repository root .env only."
+    )
 
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
-MODEL_NAME = os.getenv("MODEL_NAME", "gpt-4o")
+_root_env_values = {
+    key: value
+    for key, value in dotenv_values(_root_env).items()
+    if value is not None
+}
+os.environ.update(_root_env_values)
+
+OPENAI_API_KEY = _root_env_values.get("OPENAI_API_KEY")
+ANTHROPIC_API_KEY = _root_env_values.get("ANTHROPIC_API_KEY")
+MODEL_NAME = _root_env_values.get("MODEL_NAME", "gpt-4o")
+
+if not OPENAI_API_KEY:
+    raise RuntimeError(
+        "Missing OPENAI_API_KEY in the repository root .env file."
+    )
 
 # مسارات الوكلاء الأربعة
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))

@@ -9,6 +9,8 @@ npm install
 npm run start
 ```
 
+يعتمد هذا الوكيل على ملف البيئة الموحد في جذر المستودع فقط.
+
 ## Envelope Input
 
 - قراءة JSON envelope من stdin

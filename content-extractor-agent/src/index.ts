@@ -1,4 +1,14 @@
-import "dotenv/config";
+import dotenv from "dotenv";
+import path from "path";
+
+const rootEnvPath = path.resolve(__dirname, "../../.env");
+const rootEnvResult = dotenv.config({ path: rootEnvPath, override: true });
+
+if (rootEnvResult.error) {
+  throw new Error(
+    `Missing root environment file at ${rootEnvPath}. This agent reads configuration from the repository root .env only.`,
+  );
+}
 
 import { ChatOpenAI } from "@langchain/openai";
 import { createDeepAgent } from "deepagents";
@@ -41,11 +51,12 @@ async function main() {
 
   if (!process.env.OPENAI_API_KEY?.trim()) {
     throw new Error(
-      "Missing OPENAI_API_KEY. Copy .env.example to .env and set your key before running the agent.",
+      "Missing OPENAI_API_KEY in the repository root .env file.",
     );
   }
 
   const model = new ChatOpenAI({
+    apiKey: process.env.OPENAI_API_KEY.trim(),
     model: process.env.OPENAI_MODEL?.trim() || "gpt-4o-mini",
     temperature: Number(process.env.OPENAI_TEMPERATURE ?? "0"),
   });
@@ -84,9 +95,12 @@ main().catch((error: unknown) => {
 async function readEnvelopeInput(): Promise<unknown | null> {
   const fromArg = process.argv.find((arg) => arg.startsWith("--envelope-path="));
   if (fromArg) {
-    const path = fromArg.split("=")[1];
+    const envelopePath = fromArg.split("=")[1];
+    if (!envelopePath) {
+      throw new Error("Missing value for --envelope-path.");
+    }
     const fs = await import("node:fs/promises");
-    return JSON.parse(await fs.readFile(path, "utf-8"));
+    return JSON.parse(await fs.readFile(envelopePath, "utf-8"));
   }
 
   const chunks: Buffer[] = [];

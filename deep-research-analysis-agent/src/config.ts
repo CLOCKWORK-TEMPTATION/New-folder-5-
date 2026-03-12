@@ -1,8 +1,18 @@
-import "dotenv/config";
-
+import dotenv from "dotenv";
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+
+const __cfgFilename = fileURLToPath(import.meta.url);
+const __cfgDirname = dirname(__cfgFilename);
+const ROOT_ENV_PATH = resolve(__cfgDirname, "../../.env");
+const rootEnvResult = dotenv.config({ path: ROOT_ENV_PATH, override: true });
+
+if (rootEnvResult.error) {
+  throw new Error(
+    `Missing root environment file at ${ROOT_ENV_PATH}. This agent reads configuration from the repository root .env only.`,
+  );
+}
 
 const MEMORY_GUIDE = `# Research Analysis Memory
 
@@ -39,6 +49,7 @@ export interface ProjectPaths {
 }
 
 export interface AgentSettings {
+  openAiApiKey: string;
   coordinatorModel: string;
   researchModel: string;
   verifierModel: string;
@@ -96,6 +107,7 @@ export function ensureRuntimeLayout(paths: ProjectPaths): void {
 }
 
 export function getAgentSettings(): AgentSettings {
+  const openAiApiKey = process.env.OPENAI_API_KEY?.trim();
   const baseModel = process.env.OPENAI_MODEL?.trim() || "gpt-4o-mini";
   const tracingEnabled = Boolean(process.env.LANGSMITH_API_KEY?.trim());
 
@@ -108,6 +120,7 @@ export function getAgentSettings(): AgentSettings {
   }
 
   return {
+    openAiApiKey: openAiApiKey || "",
     coordinatorModel:
       process.env.OPENAI_COORDINATOR_MODEL?.trim() || baseModel,
     researchModel: process.env.OPENAI_RESEARCH_MODEL?.trim() || baseModel,
@@ -130,7 +143,7 @@ export function getAgentSettings(): AgentSettings {
 export function assertRequiredEnvironment(): void {
   if (!process.env.OPENAI_API_KEY?.trim()) {
     throw new Error(
-      "Missing OPENAI_API_KEY. Copy .env.example to .env and set your key before running the agent.",
+      "Missing OPENAI_API_KEY in the repository root .env file.",
     );
   }
 }

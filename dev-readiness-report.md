@@ -18,7 +18,7 @@
 | ملفات البيئة `.env` | ❌ | مفقودة في **جميع** الوكلاء الخمسة |
 | خوادم HTTP (المنافذ 3001-3004) | ❌ | **غير موجودة** في أي وكيل TypeScript |
 | نظام الوحدات (Module System) | ❌ | تضارب ESM/CJS بين الوكلاء |
-| القوالب (1.md - 4.md) | ✅ | مكتملة وشاملة |
+| القوالب (القوالب المرجعية القديمة) | ✅ | مكتملة وشاملة |
 | التوثيق (CLAUDE.md) | ✅ | شامل ومفصل |
 | البنية المعمارية (التصميم) | ✅ | سليمة ومنطقية |
 
@@ -188,10 +188,10 @@ npm install
 **الإصلاح:**
 ```bash
 # لكل وكيل يحتوي .env.example:
-cd search-manager-agent && cp .env.example .env
-cd ../search-scout-agent && cp .env.example .env
-cd ../deep-research-analysis-agent && cp .env.example .env
-cd ../report-drafting-agent && cp .env.example .env
+cd search-manager-agent && copy ..\\.env.example ..\\.env
+cd ../search-scout-agent && copy ..\\.env.example ..\\.env
+cd ../deep-research-analysis-agent && copy ..\\.env.example ..\\.env
+cd ../report-drafting-agent && copy ..\\.env.example ..\\.env
 
 # content-extractor-agent يحتاج إنشاء .env يدوياً:
 cat > content-extractor-agent/.env << 'EOF'
@@ -385,7 +385,7 @@ source venv/bin/activate
 # Windows:
 venv\Scripts\activate
 pip install -r requirements.txt
-cp .env.example .env
+copy ..\\.env.example ..\\.env
 # عدّل .env وأضف OPENAI_API_KEY
 
 # ════════════════════════════════════════════
@@ -395,7 +395,7 @@ cd ../search-scout-agent
 npm install
 # أضف الاعتمادات المفقودة:
 npm install @langchain/langgraph @langchain/langgraph-checkpoint deepagents
-cp .env.example .env
+copy ..\\.env.example ..\\.env
 # عدّل .env وأضف المفاتيح المطلوبة
 
 # ════════════════════════════════════════════
@@ -414,7 +414,7 @@ npm install
 cd ../deep-research-analysis-agent
 # node_modules موجودة بالفعل
 npm run build   # إعادة بناء dist/
-cp .env.example .env
+copy ..\\.env.example ..\\.env
 # عدّل .env وأضف OPENAI_API_KEY
 
 # ════════════════════════════════════════════
@@ -422,7 +422,7 @@ cp .env.example .env
 # ════════════════════════════════════════════
 cd ../report-drafting-agent
 npm install
-cp .env.example .env
+copy ..\\.env.example ..\\.env
 # عدّل .env وأضف ANTHROPIC_API_KEY و OPENAI_API_KEY
 
 # ════════════════════════════════════════════

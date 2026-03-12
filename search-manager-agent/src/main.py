@@ -27,7 +27,7 @@ def parse_args():
     parser.add_argument(
         "--model", "-m",
         default=None,
-        help="اسم نموذج OpenAI (الافتراضي: من ملف .env)"
+        help="اسم نموذج OpenAI (الافتراضي: من ملف .env في جذر المشروع)"
     )
     parser.add_argument(
         "--readiness",

@@ -10,7 +10,21 @@
  * تدفق العمل:
  * بيانات خام → هيكلة → كتابة (متوازي) → توثيق → مراجعة نهائية → التقرير
  */
-import "dotenv/config";
+import dotenv from "dotenv";
+import { resolve, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const rootEnvPath = resolve(__dirname, "../../.env");
+const rootEnvResult = dotenv.config({ path: rootEnvPath, override: true });
+
+if (rootEnvResult.error) {
+  throw new Error(
+    `Missing root environment file at ${rootEnvPath}. This agent reads configuration from the repository root .env only.`,
+  );
+}
+
 import { createDeepAgent } from "deepagents";
 import { ChatAnthropic } from "@langchain/anthropic";
 
@@ -32,20 +46,50 @@ import type {
 } from "./types/index.js";
 import { parseEnvelope } from "./types/adapter.js";
 
+const anthropicApiKey = process.env.ANTHROPIC_API_KEY?.trim();
+if (!anthropicApiKey) {
+  throw new Error(
+    "Missing ANTHROPIC_API_KEY in the repository root .env file.",
+  );
+}
+
 // ─────────────────────────────────────────────
 // إنشاء الوكيل الرئيسي
 // ─────────────────────────────────────────────
 
 const model = new ChatAnthropic({
+  apiKey: anthropicApiKey,
   model: "claude-sonnet-4-20250514",
   temperature: 0,
   maxTokens: 8192,
 });
 
+type AgentTodo = {
+  status?: string;
+  description?: string;
+};
+
+type AgentMessage = {
+  content: unknown;
+};
+
+type AgentRunResult = {
+  messages: AgentMessage[];
+  todos?: AgentTodo[];
+  files?: Record<string, unknown>;
+};
+
+export interface GeneratedReportResult {
+  messages: AgentMessage[];
+  todos?: AgentTodo[];
+  files?: Record<string, unknown>;
+  finalMessage: unknown;
+}
+
 /**
  * إنشاء وكيل صياغة التقارير مع جميع الوكلاء الفرعيين
  */
-export function createReportDraftingAgent() {
+export function createReportDraftingAgent(): ReturnType<typeof createDeepAgent> {
   return createDeepAgent({
     model,
     systemPrompt: MAIN_ORCHESTRATOR_PROMPT,
@@ -65,14 +109,16 @@ export function createReportDraftingAgent() {
 /**
  * تشغيل وكيل صياغة التقارير على بيانات محددة
  */
-export async function generateReport(input: RawInputData) {
+export async function generateReport(
+  input: RawInputData,
+): Promise<GeneratedReportResult> {
   const agent = createReportDraftingAgent();
 
   const prompt = buildPrompt(input);
 
   const result = await agent.invoke({
     messages: [{ role: "user", content: prompt }],
-  });
+  }) as AgentRunResult;
 
   return {
     messages: result.messages,
