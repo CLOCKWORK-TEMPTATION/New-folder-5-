@@ -1,0 +1,28 @@
+{
+  "name": "search-scout-agent",
+  "version": "1.0.0",
+  "description": "وكيل البحث والاستكشاف باستخدام LangChain Deep Agents - يولّد استعلامات ذكية وينفذها على محركات بحث متعددة ويرتّب النتائج",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "tsx src/index.ts",
+    "dev": "tsx watch src/index.ts"
+  },
+  "dependencies": {
+    "deepagents": "^0.1.0",
+    "@langchain/anthropic": "^0.3.0",
+    "@langchain/openai": "^0.3.0",
+    "@langchain/tavily": "^0.1.0",
+    "@langchain/langgraph": "^0.2.0",
+    "@langchain/langgraph-checkpoint": "^0.0.10",
+    "langchain": "^0.3.0",
+    "zod": "^3.23.0",
+    "dotenv": "^16.4.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0",
+    "tsx": "^4.16.0",
+    "@types/node": "^22.0.0"
+  }
+}
