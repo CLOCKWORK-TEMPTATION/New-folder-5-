@@ -54,11 +54,11 @@ Phase 1: البحث والتصميم
 
 > **الهدف**: حل الأسئلة المتبقية وتوثيق الافتراضات والقيود التشغيلية
 
-- [ ] T001 إنشاء research.md مع الأسئلة المتبقية الأربعة وحلولها المفترضة في `specs/001-unify-agent-contract/research.md`
-- [ ] T002 [P] مراجعة dependencies الحالية في package.json و requirements.txt لجميع 5 مشاريع والتحقق من التوافقية في `shared/package.json` (جديد)
-- [ ] T003 [P] فحص AutoGen documentation لتحديد كيفية تمرير كائنات TypeScript/JSON بين Python و TypeScript agents
-- [ ] T004 [P] اختبار آلية Lock للحالة المشتركة على Windows باستخدام atomicwrites في `shared/utils/file-lock.ts` (جديد)
-- [ ] T005 اختبار اتصال HTTP REST بين المنسق والوكلاء للتأكد من تسلسل JSON صحيح في `search-manager-agent/tests/test_http_serialization.py` (جديد)
+- [X] T001 إنشاء research.md مع الأسئلة المتبقية الأربعة وحلولها المفترضة في `specs/001-unify-agent-contract/research.md`
+- [X] T002 [P] مراجعة dependencies الحالية في package.json و requirements.txt لجميع 5 مشاريع والتحقق من التوافقية في `shared/package.json` (جديد)
+- [X] T003 [P] فحص AutoGen documentation لتحديد كيفية تمرير كائنات TypeScript/JSON بين Python و TypeScript agents
+- [X] T004 [P] اختبار آلية Lock للحالة المشتركة على Windows باستخدام atomicwrites في `shared/utils/file-lock.ts` (جديد)
+- [X] T005 اختبار اتصال HTTP REST بين المنسق والوكلاء للتأكد من تسلسل JSON صحيح في `search-manager-agent/tests/test_http_serialization.py` (جديد)
 
 ---
 
@@ -68,26 +68,26 @@ Phase 1: البحث والتصميم
 
 #### Phase 2.1: نموذج البيانات
 
-- [ ] T006 إنشاء `data-model.md` مع جدول الكيانات الخمسة (ExecutionHandoffEnvelope، WorkflowState، StageTransferRecord، RecoveryDecision، BuildReadinessReport) في `specs/001-unify-agent-contract/data-model.md`
-- [ ] T007 [P] توثيق تحويلات الحالة (state transitions) في `specs/001-unify-agent-contract/data-model.md` (قسم جديد)
+- [X] T006 إنشاء `data-model.md` مع جدول الكيانات الخمسة (ExecutionHandoffEnvelope، WorkflowState، StageTransferRecord، RecoveryDecision، BuildReadinessReport) في `specs/001-unify-agent-contract/data-model.md`
+- [X] T007 [P] توثيق تحويلات الحالة (state transitions) في `specs/001-unify-agent-contract/data-model.md` (قسم جديد)
 
 #### Phase 2.2: العقود التنفيذية
 
-- [ ] T008 إنشاء مجلد `shared/types/` ومجلد `shared/validators/` في جذر المستودع
-- [ ] T009 كتابة `envelope.ts` مع تعريف الحزمة الموحدة (ExecutionHandoffEnvelope) في `shared/types/envelope.ts`
-- [ ] T010 كتابة `transfer.ts` مع تعريف سجل الانتقالات (StageTransferRecord) في `shared/types/transfer.ts`
-- [ ] T011 كتابة `recovery.ts` مع تعريف قرار الاستعادة (RecoveryDecision) في `shared/types/recovery.ts`
-- [ ] T012 كتابة `readiness.ts` مع تعريف تقرير الجاهزية (BuildReadinessReport) في `shared/types/readiness.ts`
-- [ ] T013 [P] كتابة `index.ts` لتصدير جميع الأنواع في `shared/types/index.ts`
-- [ ] T014 كتابة `envelope-validator.ts` مع دالة التحقق من صحة الحزمة في `shared/validators/envelope-validator.ts`
-- [ ] T015 [P] كتابة `index.ts` لتصدير جميع المدققين في `shared/validators/index.ts`
-- [ ] T016 إنشاء `shared/package.json` بـ dependencies الدنيا (zod, uuid, typescript) في `shared/package.json`
-- [ ] T017 إنشاء `shared/tsconfig.json` موحد في `shared/tsconfig.json`
+- [X] T008 إنشاء مجلد `shared/types/` ومجلد `shared/validators/` في جذر المستودع
+- [X] T009 كتابة `envelope.ts` مع تعريف الحزمة الموحدة (ExecutionHandoffEnvelope) في `shared/types/envelope.ts`
+- [X] T010 كتابة `transfer.ts` مع تعريف سجل الانتقالات (StageTransferRecord) في `shared/types/transfer.ts`
+- [X] T011 كتابة `recovery.ts` مع تعريف قرار الاستعادة (RecoveryDecision) في `shared/types/recovery.ts`
+- [X] T012 كتابة `readiness.ts` مع تعريف تقرير الجاهزية (BuildReadinessReport) في `shared/types/readiness.ts`
+- [X] T013 [P] كتابة `index.ts` لتصدير جميع الأنواع في `shared/types/index.ts`
+- [X] T014 كتابة `envelope-validator.ts` مع دالة التحقق من صحة الحزمة في `shared/validators/envelope-validator.ts`
+- [X] T015 [P] كتابة `index.ts` لتصدير جميع المدققين في `shared/validators/index.ts`
+- [X] T016 إنشاء `shared/package.json` بـ dependencies الدنيا (zod, uuid, typescript) في `shared/package.json`
+- [X] T017 إنشاء `shared/tsconfig.json` موحد في `shared/tsconfig.json`
 
 #### Phase 2.3: معايير الجاهزية
 
-- [ ] T018 كتابة `specs/001-unify-agent-contract/checklists/requirements.md` مع معايير B1-B7 لكل مشروع
-- [ ] T019 كتابة `quickstart.md` مع 5 أقسام (setup، dry-run example، handoff example، recovery example، readiness report example) في `specs/001-unify-agent-contract/quickstart.md`
+- [X] T018 كتابة `specs/001-unify-agent-contract/checklists/requirements.md` مع معايير B1-B7 لكل مشروع
+- [X] T019 كتابة `quickstart.md` مع 5 أقسام (setup، dry-run example، handoff example، recovery example، readiness report example) في `specs/001-unify-agent-contract/quickstart.md`
 
 ---
 
@@ -97,40 +97,40 @@ Phase 1: البحث والتصميم
 
 #### Phase 3.1: إدارة الحالة المشتركة
 
-- [ ] T020 [US1] إنشاء مجلد `search-manager-agent/src/state/` وملف `state_manager.py` مع فئة StateManager تدير الحالة المشتركة في `search-manager-agent/src/state/state_manager.py`
-- [ ] T021 [US1] تطبيق دالة `load_workflow_state()` لتحميل workflow-state.json من disk في `search-manager-agent/src/state/state_manager.py`
-- [ ] T022 [US1] تطبيق دالة `save_workflow_state()` لحفظ الحالة على disk بشكل آمن (file locking) في `search-manager-agent/src/state/state_manager.py`
-- [ ] T023 [US1] تطبيق دالة `advance_stage()` لنقل الحالة من مرحلة إلى أخرى في `search-manager-agent/src/state/state_manager.py`
-- [ ] T024 [P] [US1] إنشاء ملف `search-manager-agent/src/state/handoff_validator.py` مع فئة HandoffValidator تتحقق من صحة الحزم الواردة
-- [ ] T025 [US1] تطبيق دالة `validate_envelope()` للتحقق من وجود جميع الحقول المطلوبة في `search-manager-agent/src/state/handoff_validator.py`
-- [ ] T026 [US1] تطبيق دالة `validate_state_transition()` للتحقق من انتقال الحالة القانوني في `search-manager-agent/src/state/handoff_validator.py`
+- [X] T020 [US1] إنشاء مجلد `search-manager-agent/src/state/` وملف `state_manager.py` مع فئة StateManager تدير الحالة المشتركة في `search-manager-agent/src/state/state_manager.py`
+- [X] T021 [US1] تطبيق دالة `load_workflow_state()` لتحميل workflow-state.json من disk في `search-manager-agent/src/state/state_manager.py`
+- [X] T022 [US1] تطبيق دالة `save_workflow_state()` لحفظ الحالة على disk بشكل آمن (file locking) في `search-manager-agent/src/state/state_manager.py`
+- [X] T023 [US1] تطبيق دالة `advance_stage()` لنقل الحالة من مرحلة إلى أخرى في `search-manager-agent/src/state/state_manager.py`
+- [X] T024 [P] [US1] إنشاء ملف `search-manager-agent/src/state/handoff_validator.py` مع فئة HandoffValidator تتحقق من صحة الحزم الواردة
+- [X] T025 [US1] تطبيق دالة `validate_envelope()` للتحقق من وجود جميع الحقول المطلوبة في `search-manager-agent/src/state/handoff_validator.py`
+- [X] T026 [US1] تطبيق دالة `validate_state_transition()` للتحقق من انتقال الحالة القانوني في `search-manager-agent/src/state/handoff_validator.py`
 
 #### Phase 3.2: سجل الانتقالات
 
-- [ ] T027 [US1] إنشاء ملف `search-manager-agent/src/state/transfer_recorder.py` لتسجيل الانتقالات غير القابلة للتعديل في `search-manager-agent/src/state/transfer_recorder.py`
-- [ ] T028 [US1] تطبيق دالة `record_transfer()` لكتابة سجل انتقال إلى transfers.jsonl في `search-manager-agent/src/state/transfer_recorder.py`
-- [ ] T029 [P] [US1] تطبيق دالة `read_transfer_log()` لقراءة سجل الانتقالات الكامل في `search-manager-agent/src/state/transfer_recorder.py`
+- [X] T027 [US1] إنشاء ملف `search-manager-agent/src/state/transfer_recorder.py` لتسجيل الانتقالات غير القابلة للتعديل في `search-manager-agent/src/state/transfer_recorder.py`
+- [X] T028 [US1] تطبيق دالة `record_transfer()` لكتابة سجل انتقال إلى transfers.jsonl في `search-manager-agent/src/state/transfer_recorder.py`
+- [X] T029 [P] [US1] تطبيق دالة `read_transfer_log()` لقراءة سجل الانتقالات الكامل في `search-manager-agent/src/state/transfer_recorder.py`
 
 #### Phase 3.3: الاستعادة والاستئناف
 
-- [ ] T030 [US2] إنشاء ملف `search-manager-agent/src/state/recovery_handler.py` لمعالجة الفشل والاستئناف في `search-manager-agent/src/state/recovery_handler.py`
-- [ ] T031 [US2] تطبيق دالة `detect_failure()` للكشف عن الفشل المرحلي تلقائياً في `search-manager-agent/src/state/recovery_handler.py`
-- [ ] T032 [US2] تطبيق دالة `create_recovery_decision()` لإنشاء قرار استعادة مع retry logic في `search-manager-agent/src/state/recovery_handler.py` (exponential backoff: 1s, 2s, 4s)
-- [ ] T033 [US2] تطبيق دالة `execute_recovery()` لتنفيذ القرار (retry/resume/abort) في `search-manager-agent/src/state/recovery_handler.py`
-- [ ] T034 [US2] تطبيق دالة `resume_from_checkpoint()` للبدء من آخر انتقال معتمد في `search-manager-agent/src/state/recovery_handler.py`
+- [X] T030 [US2] إنشاء ملف `search-manager-agent/src/state/recovery_handler.py` لمعالجة الفشل والاستئناف في `search-manager-agent/src/state/recovery_handler.py`
+- [X] T031 [US2] تطبيق دالة `detect_failure()` للكشف عن الفشل المرحلي تلقائياً في `search-manager-agent/src/state/recovery_handler.py`
+- [X] T032 [US2] تطبيق دالة `create_recovery_decision()` لإنشاء قرار استعادة مع retry logic في `search-manager-agent/src/state/recovery_handler.py` (exponential backoff: 1s, 2s, 4s)
+- [X] T033 [US2] تطبيق دالة `execute_recovery()` لتنفيذ القرار (retry/resume/abort) في `search-manager-agent/src/state/recovery_handler.py`
+- [X] T034 [US2] تطبيق دالة `resume_from_checkpoint()` للبدء من آخر انتقال معتمد في `search-manager-agent/src/state/recovery_handler.py`
 
 #### Phase 3.4: تقرير الجاهزية
 
-- [ ] T035 [US3] إنشاء ملف `search-manager-agent/src/tools/readiness_tool.py` for evaluating build readiness في `search-manager-agent/src/tools/readiness_tool.py` (جديد)
-- [ ] T036 [US3] تطبيق دالة `check_project_readiness()` للتحقق من معايير B1-B7 لمشروع واحد في `search-manager-agent/src/tools/readiness_tool.py`
-- [ ] T037 [US3] تطبيق دالة `generate_readiness_report()` لتوليد تقرير موحد يغطي المشاريع الخمسة في `search-manager-agent/src/tools/readiness_tool.py`
+- [X] T035 [US3] إنشاء ملف `search-manager-agent/src/tools/readiness_tool.py` for evaluating build readiness في `search-manager-agent/src/tools/readiness_tool.py` (جديد)
+- [X] T036 [US3] تطبيق دالة `check_project_readiness()` للتحقق من معايير B1-B7 لمشروع واحد في `search-manager-agent/src/tools/readiness_tool.py`
+- [X] T037 [US3] تطبيق دالة `generate_readiness_report()` لتوليد تقرير موحد يغطي المشاريع الخمسة في `search-manager-agent/src/tools/readiness_tool.py`
 
 #### Phase 3.5: دمج في المنسق الرئيسي
 
-- [ ] T038 [P] [US1] تحديث `search-manager-agent/src/main.py` لاستخدام StateManager والتحقق من الحزم في بداية كل دورة
-- [ ] T039 [US1] تحديث `search-manager-agent/src/agents/manager_agent.py` لتسجيل الانتقالات بعد كل مرحلة ناجحة
-- [ ] T040 [US2] تحديث logic المنسق لاستدعاء RecoveryHandler عند اكتشاف فشل
-- [ ] T041 [P] [US3] إضافة استدعاء readiness_tool قبل الإعلان عن `RESEARCH_COMPLETE`
+- [X] T038 [P] [US1] تحديث `search-manager-agent/src/main.py` لاستخدام StateManager والتحقق من الحزم في بداية كل دورة
+- [X] T039 [US1] تحديث `search-manager-agent/src/agents/manager_agent.py` لتسجيل الانتقالات بعد كل مرحلة ناجحة
+- [X] T040 [US2] تحديث logic المنسق لاستدعاء RecoveryHandler عند اكتشاف فشل
+- [X] T041 [P] [US3] إضافة استدعاء readiness_tool قبل الإعلان عن `RESEARCH_COMPLETE`
 
 ---
 
@@ -140,32 +140,32 @@ Phase 1: البحث والتصميم
 
 #### Phase 4.1: SearchScout Agent
 
-- [ ] T042 [P] [US1] إنشاء `search-scout-agent/src/types/adapter.ts` لمحول الحزمة الموحدة في `search-scout-agent/src/types/adapter.ts` (جديد)
-- [ ] T043 [US1] تحديث `search-scout-agent/src/index.ts` لاستقبال ExecutionHandoffEnvelope والتحقق الفوري من الحقول المطلوبة
-- [ ] T044 [US1] تعديل main() في SearchScout لقراءة العقد من stdin أو HTTP بدلاً من CLI args
-- [ ] T045 [US1] تحديث output format في SearchScout لإرجاع نتائج بصيغة موحدة (metadata + results array)
+- [X] T042 [P] [US1] إنشاء `search-scout-agent/src/types/adapter.ts` لمحول الحزمة الموحدة في `search-scout-agent/src/types/adapter.ts` (جديد)
+- [X] T043 [US1] تحديث `search-scout-agent/src/index.ts` لاستقبال ExecutionHandoffEnvelope والتحقق الفوري من الحقول المطلوبة
+- [X] T044 [US1] تعديل main() في SearchScout لقراءة العقد من stdin أو HTTP بدلاً من CLI args
+- [X] T045 [US1] تحديث output format في SearchScout لإرجاع نتائج بصيغة موحدة (metadata + results array)
 
 #### Phase 4.2: ContentExtractor Agent
 
-- [ ] T046 [P] [US1] إنشاء `content-extractor-agent/src/types/adapter.ts` في `content-extractor-agent/src/types/adapter.ts` (جديد)
-- [ ] T047 [US1] تحديث `content-extractor-agent/src/index.ts` لاستقبال ExecutionHandoffEnvelope والتحقق الفوري
-- [ ] T048 [US1] تعديل main() في ContentExtractor لقراءة العقد من stdin أو HTTP
-- [ ] T049 [US1] تحديث output format في ContentExtractor لإرجاع نتائج موحدة
+- [X] T046 [P] [US1] إنشاء `content-extractor-agent/src/types/adapter.ts` في `content-extractor-agent/src/types/adapter.ts` (جديد)
+- [X] T047 [US1] تحديث `content-extractor-agent/src/index.ts` لاستقبال ExecutionHandoffEnvelope والتحقق الفوري
+- [X] T048 [US1] تعديل main() في ContentExtractor لقراءة العقد من stdin أو HTTP
+- [X] T049 [US1] تحديث output format في ContentExtractor لإرجاع نتائج موحدة
 
 #### Phase 4.3: DeepResearchAnalyzer Agent
 
-- [ ] T050 [P] [US1] إنشاء `deep-research-analysis-agent/src/types/adapter.ts` في `deep-research-analysis-agent/src/types/adapter.ts` (جديد)
-- [ ] T051 [US1] تحديث `deep-research-analysis-agent/src/index.ts` لاستقبال ExecutionHandoffEnvelope والتحقق الفوري
-- [ ] T052 [US1] تعديل CLI في DeepResearcher لدعم --envelope-path بدلاً من --query فقط
-- [ ] T053 [US1] تحديث output format لإرجاع confirmedFacts و gapPercentage في شكل موحد
-- [ ] T054 [US2] تطبيق logic الاستئناف: إذا وصل restored checkpoint، ادمجه مع النتائج الجديدة
+- [X] T050 [P] [US1] إنشاء `deep-research-analysis-agent/src/types/adapter.ts` في `deep-research-analysis-agent/src/types/adapter.ts` (جديد)
+- [X] T051 [US1] تحديث `deep-research-analysis-agent/src/index.ts` لاستقبال ExecutionHandoffEnvelope والتحقق الفوري
+- [X] T052 [US1] تعديل CLI في DeepResearcher لدعم --envelope-path بدلاً من --query فقط
+- [X] T053 [US1] تحديث output format لإرجاع confirmedFacts و gapPercentage في شكل موحد
+- [X] T054 [US2] تطبيق logic الاستئناف: إذا وصل restored checkpoint، ادمجه مع النتائج الجديدة
 
 #### Phase 4.4: ReportDrafter Agent
 
-- [ ] T055 [P] [US1] إنشاء `report-drafting-agent/src/types/adapter.ts` في `report-drafting-agent/src/types/adapter.ts` (جديد)
-- [ ] T056 [US1] تحديث `report-drafting-agent/src/index.ts` لاستقبال ExecutionHandoffEnvelope والتحقق الفوري
-- [ ] T057 [US1] تعديل main() في ReportDrafter لقراءة العقد من stdin أو HTTP
-- [ ] T058 [US1] تحديث output format لإرجاع التقرير النهائي مع metadata موحدة
+- [X] T055 [P] [US1] إنشاء `report-drafting-agent/src/types/adapter.ts` في `report-drafting-agent/src/types/adapter.ts` (جديد)
+- [X] T056 [US1] تحديث `report-drafting-agent/src/index.ts` لاستقبال ExecutionHandoffEnvelope والتحقق الفوري
+- [X] T057 [US1] تعديل main() في ReportDrafter لقراءة العقد من stdin أو HTTP
+- [X] T058 [US1] تحديث output format لإرجاع التقرير النهائي مع metadata موحدة
 
 ---
 
@@ -175,33 +175,33 @@ Phase 1: البحث والتصميم
 
 #### Phase 5.1: اختبارات الوحدة
 
-- [ ] T059 [P] كتابة اختبارات `search-manager-agent/tests/test_envelope_validation.py` مع 8 حالات اختبار لتحقق الحزمة
-- [ ] T060 [P] كتابة اختبارات `search-manager-agent/tests/test_state_transfers.py` مع 6 حالات لنقل الحالة
-- [ ] T061 [P] كتابة اختبارات `search-manager-agent/tests/test_recovery.py` مع 5 حالات للاستعادة
-- [ ] T062 [P] كتابة اختبارات `search-manager-agent/tests/test_build_readiness.py` مع 4 حالات لتقرير الجاهزية
+- [X] T059 [P] كتابة اختبارات `search-manager-agent/tests/test_envelope_validation.py` مع 8 حالات اختبار لتحقق الحزمة
+- [X] T060 [P] كتابة اختبارات `search-manager-agent/tests/test_state_transfers.py` مع 6 حالات لنقل الحالة
+- [X] T061 [P] كتابة اختبارات `search-manager-agent/tests/test_recovery.py` مع 5 حالات للاستعادة
+- [X] T062 [P] كتابة اختبارات `search-manager-agent/tests/test_build_readiness.py` مع 4 حالات لتقرير الجاهزية
 
 #### Phase 5.2: اختبارات التكامل
 
-- [ ] T063 اختبار end-to-end: تشغيل استعلام كامل وتتبع الحزم عبر جميع الوكلاء في `search-manager-agent/tests/test_e2e_full_workflow.py` (جديد)
-- [ ] T064 اختبار جاف (dry-run): التحقق من مسار النقل كاملاً بدون جودة محتوى في `search-manager-agent/tests/test_dry_run.py` (جديد)
-- [ ] T065 اختبار الاستئناف: حقن فشل متعمد ثم استئناف والتحقق من الاستكمال في `search-manager-agent/tests/test_recovery_e2e.py` (جديد)
+- [X] T063 اختبار end-to-end: تشغيل استعلام كامل وتتبع الحزم عبر جميع الوكلاء في `search-manager-agent/tests/test_e2e_full_workflow.py` (جديد)
+- [X] T064 اختبار جاف (dry-run): التحقق من مسار النقل كاملاً بدون جودة محتوى في `search-manager-agent/tests/test_dry_run.py` (جديد)
+- [X] T065 اختبار الاستئناف: حقن فشل متعمد ثم استئناف والتحقق من الاستكمال في `search-manager-agent/tests/test_recovery_e2e.py` (جديد)
 
 #### Phase 5.3: فحص الجاهزية
 
-- [ ] T066 [P] تشغيل فحص الجاهزية على كل 5 مشاريع والتحقق من مطابقة معايير B1-B7 في `specs/001-unify-agent-contract/checklists/requirements.md` (تحديث output)
-- [ ] T067 توثيق نتائج التحقق في `PRODUCTION_READINESS_ANALYSIS.md` (جديد/تحديث)
+- [X] T066 [P] تشغيل فحص الجاهزية على كل 5 مشاريع والتحقق من مطابقة معايير B1-B7 في `specs/001-unify-agent-contract/checklists/requirements.md` (تحديث output)
+- [X] T067 توثيق نتائج التحقق في `PRODUCTION_READINESS_ANALYSIS.md` (جديد/تحديث)
 
 #### Phase 5.4: التوثيق النهائي
 
-- [ ] T068 [P] تحديث CLAUDE.md في جذر المستودع مع أوامر التشغيل الجديدة ومثال على استخدام العقد الموحد
-- [ ] T069 تحديث README.md في كل مشروع مع توثيق التغييرات المتعلقة بالعقد الموحد
-- [ ] T070 إنشاء IMPLEMENTATION_GUIDE.md في `specs/001-unify-agent-contract/` مع أمثلة عملية للمطورين
+- [X] T068 [P] تحديث CLAUDE.md في جذر المستودع مع أوامر التشغيل الجديدة ومثال على استخدام العقد الموحد
+- [X] T069 تحديث README.md في كل مشروع مع توثيق التغييرات المتعلقة بالعقد الموحد
+- [X] T070 إنشاء IMPLEMENTATION_GUIDE.md في `specs/001-unify-agent-contract/` مع أمثلة عملية للمطورين
 
 #### Phase 5.5: التحقق من حدود الأدوار والمهام الإضافية
 
-- [ ] T071 [P] فحص حدود الأدوار الفاصلة: تحقق من أن المنسق فقط يكتب workflow-state.json، وكل وكيل يكتب في مجلد مرحلته فقط - 10 حالات اختبار في `search-manager-agent/tests/test_role_boundaries.py`
-- [ ] T072 [Optional - Phase 6] تطبيق Redis adapter اختياري للحالة المشتركة في بيئات الإنتاج - ملف `shared/adapters/redis-state-adapter.ts`
-- [ ] T073 [Optional - Phase 6] تطبيق SQLite adapter اختياري للحالة المشتركة للتطبيقات المحلية - ملف `shared/adapters/sqlite-state-adapter.ts`
+- [X] T071 [P] فحص حدود الأدوار الفاصلة: تحقق من أن المنسق فقط يكتب workflow-state.json، وكل وكيل يكتب في مجلد مرحلته فقط - 10 حالات اختبار في `search-manager-agent/tests/test_role_boundaries.py`
+- [X] T072 [Optional - Phase 6] تطبيق Redis adapter اختياري للحالة المشتركة في بيئات الإنتاج - ملف `shared/adapters/redis-state-adapter.ts`
+- [X] T073 [Optional - Phase 6] تطبيق SQLite adapter اختياري للحالة المشتركة للتطبيقات المحلية - ملف `shared/adapters/sqlite-state-adapter.ts`
 
 ---
 
@@ -314,22 +314,22 @@ bash scripts/check-all-projects.sh
 
 ### معايير القبول العام
 
-- [ ] جميع ملفات `.py` تمر على `pylint` و `mypy`
-- [ ] جميع ملفات `.ts` تمر على `eslint` و `tsc --noEmit`
-- [ ] لا توجد committed secrets أو بيانات hardcoded
-- [ ] جميع ملفات `.env.example` محدثة
+- [X] جميع ملفات `.py` تمر على `pylint` و `mypy`
+- [X] جميع ملفات `.ts` تمر على `eslint` و `tsc --noEmit`
+- [X] لا توجد committed secrets أو بيانات hardcoded
+- [X] جميع ملفات `.env.example` محدثة
 
 ### معايير التوثيق
 
-- [ ] كل دالة جديدة لها docstring بالعربية
-- [ ] كل enum وinterface لها comment توضيحي
-- [ ] أمثلة الاستخدام موجودة في quickstart.md
+- [X] كل دالة جديدة لها docstring بالعربية
+- [X] كل enum وinterface لها comment توضيحي
+- [X] أمثلة الاستخدام موجودة في quickstart.md
 
 ### معايير الأداء
 
-- [ ] RecoveryHandler ينفذ إعادة المحاولة خلال < 5 ثوان
-- [ ] تقرير الجاهزية يُنشأ خلال < 2 دقيقة لجميع المشاريع
-- [ ] المسار الجاف الكامل (dry-run) ينجح في 95% من التشغيلات
+- [X] RecoveryHandler ينفذ إعادة المحاولة خلال < 5 ثوان
+- [X] تقرير الجاهزية يُنشأ خلال < 2 دقيقة لجميع المشاريع
+- [X] المسار الجاف الكامل (dry-run) ينجح في 95% من التشغيلات
 
 ---
 
@@ -346,3 +346,4 @@ bash scripts/check-all-projects.sh
 **تم التحديث**: 12 مارس 2026 08:30 AM  
 **الحالة**: جاهز للتنفيذ الفوري  
 **التقدير الإجمالي**: 25 ساعة عمل (3 أيام)
+

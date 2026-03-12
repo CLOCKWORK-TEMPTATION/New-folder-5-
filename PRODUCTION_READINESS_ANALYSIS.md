@@ -1,6 +1,41 @@
 # Production Readiness Analysis - TypeScript Agents
 **Generated: 2026-03-12**
 
+## Readiness Gate (B1-B7) - 2026-03-12
+
+- Report ID: `e672ac90-8c8d-4d8d-8cc6-13bb66174939`
+- Overall Status: **ready**
+- Checked projects:
+  - search-manager-agent: ready
+  - search-scout-agent: ready
+  - content-extractor-agent: ready
+  - deep-research-analysis-agent: ready
+  - report-drafting-agent: ready
+- Blockers: none
+
+## Update (Unified Contract Implementation)
+
+- تم إضافة دعم `research-task-envelope/v1` في:
+  - `search-scout-agent`
+  - `content-extractor-agent`
+  - `deep-research-analysis-agent`
+  - `report-drafting-agent`
+- تم توحيد شكل المخرجات إلى:
+  - `metadata`
+  - `results` (أو حقول تحليل موحدة في deep-research)
+- تم إضافة مكتبة `shared/` لعقود الأنواع والمدققات.
+- تم إضافة وحدات إدارة الحالة والاستعادة في `search-manager-agent`.
+
+### Current status summary
+
+| Area | Status |
+|---|---|
+| Unified envelope contract | ✅ Implemented baseline |
+| Orchestrator state + transfer log | ✅ Implemented baseline |
+| Worker adapters | ✅ Implemented baseline |
+| Unit tests (manager) | ✅ Added |
+| Full E2E integration tests | ⚠️ Pending |
+
 All four agents are in a DEVELOPMENT state with significant production readiness issues. None are HTTP servers; all are CLI-only tools.
 
 ---

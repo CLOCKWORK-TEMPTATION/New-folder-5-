@@ -3,6 +3,8 @@
 يستخدم AutoGen SelectorGroupChat لتنسيق فريق البحث الكامل.
 """
 import asyncio
+import json
+from uuid import uuid4
 from autogen_agentchat.agents import AssistantAgent
 from autogen_agentchat.conditions import TextMentionTermination, MaxMessageTermination
 from autogen_agentchat.teams import SelectorGroupChat
@@ -12,9 +14,11 @@ from src.tools import (
     run_search_scout,
     run_content_extractor,
     run_deep_research,
-    run_report_drafting
+    run_report_drafting,
+    generate_readiness_report,
 )
 from src.config import OPENAI_API_KEY, MODEL_NAME
+from src.state import StateManager, TransferRecorder, RecoveryHandler, HandoffValidator
 
 
 def create_research_team(model_name: str = None):
@@ -326,10 +330,50 @@ async def run_deep_search(query: str, model_name: str = None) -> str:
         التقرير النهائي كنص
     """
     team, model_client = create_research_team(model_name)
+    run_id = str(uuid4())
+    state_manager = StateManager()
+    transfer_recorder = TransferRecorder()
+    recovery_handler = RecoveryHandler(transfer_recorder)
+    validator = HandoffValidator()
+    envelope = {
+        "protocolVersion": "research-task-envelope/v1",
+        "runId": run_id,
+        "taskId": f"task-{run_id[:8]}",
+        "workflowStage": "search",
+        "sender": "SearchManager",
+        "targetAgent": "SearchScout",
+        "objective": "تنفيذ دورة بحث عميق كاملة",
+        "userRequest": query,
+        "constraints": {},
+        "inputs": {"artifacts": [], "inlineData": {}, "sharedStatePath": f"runtime/runs/{run_id}/state/workflow-state.json"},
+        "execution": {"attempt": 1, "timeoutSeconds": 300},
+        "trace": {"createdAt": "2026-03-12T00:00:00Z", "createdBy": "search-manager-agent", "correlationId": run_id},
+    }
+    is_valid, message = validator.validate_envelope(envelope)
+    if not is_valid:
+        raise ValueError(f"Envelope validation failed: {message}")
+
+    state = state_manager.load_workflow_state(run_id)
+    state_manager.save_workflow_state(run_id, state)
+    transfer_recorder.record_transfer(run_id, "manager", "search", envelope["taskId"], "success", metadata={"event": "run-started"})
 
     try:
         print(f"\nبدء البحث العميق: {query}\n{'='*60}")
         result = await Console(team.run_stream(task=query))
+        state_manager.advance_stage(run_id, "draft")
+        transfer_recorder.record_transfer(run_id, "analyze", "draft", envelope["taskId"], "success", metadata={"event": "run-finished"})
+        readiness = generate_readiness_report()
+        if readiness.get("overallStatus") == "blocked":
+            transfer_recorder.record_transfer(run_id, "draft", "draft", envelope["taskId"], "failure", "Readiness blocked")
+        else:
+            transfer_recorder.record_transfer(run_id, "draft", "draft", envelope["taskId"], "success", metadata={"event": "readiness-ok"})
         return result
+    except Exception as exc:
+        failed = {"status": "failure", "error": str(exc)}
+        if recovery_handler.detect_failure(failed):
+            decision = recovery_handler.create_recovery_decision(str(exc), "search", 1)
+            action = recovery_handler.execute_recovery(decision)
+            transfer_recorder.record_transfer(run_id, "manager", "search", envelope["taskId"], "failure", reason=json.dumps(decision, ensure_ascii=False), metadata={"action": action})
+        raise
     finally:
         await model_client.close()

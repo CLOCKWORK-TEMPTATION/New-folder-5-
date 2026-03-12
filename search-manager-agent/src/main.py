@@ -6,6 +6,7 @@ import asyncio
 import argparse
 import sys
 from src.agents.manager_agent import run_deep_search
+from src.tools.readiness_tool import generate_readiness_report
 
 
 def parse_args():
@@ -20,13 +21,18 @@ def parse_args():
     )
     parser.add_argument(
         "--query", "-q",
-        required=True,
+        required=False,
         help="سؤال أو موضوع البحث"
     )
     parser.add_argument(
         "--model", "-m",
         default=None,
         help="اسم نموذج OpenAI (الافتراضي: من ملف .env)"
+    )
+    parser.add_argument(
+        "--readiness",
+        action="store_true",
+        help="تشغيل فحص الجاهزية الموحد B1-B7 وإظهار التقرير"
     )
     return parser.parse_args()
 
@@ -35,6 +41,12 @@ async def main():
     args = parse_args()
 
     try:
+        if args.readiness:
+            print(generate_readiness_report())
+            return
+        if not args.query:
+            raise ValueError("المعامل --query مطلوب عند تشغيل دورة البحث")
+
         result = await run_deep_search(
             query=args.query,
             model_name=args.model

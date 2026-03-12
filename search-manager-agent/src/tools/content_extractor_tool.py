@@ -13,8 +13,29 @@ async def run_content_extractor(urls: list) -> str:
     Returns:
         JSON string يحتوي على المحتوى المستخرج من كل رابط (title, body, metadata)
     """
-    message = f"قم باستخراج المحتوى من الروابط التالية:\n" + "\n".join(urls)
-    input_data = json.dumps({"messages": [{"role": "user", "content": message}]}, ensure_ascii=False)
+    envelope = {
+        "protocolVersion": "research-task-envelope/v1",
+        "runId": "runtime-run",
+        "taskId": "content-extractor-task",
+        "workflowStage": "extract",
+        "sender": "SearchManager",
+        "targetAgent": "ContentExtractor",
+        "objective": "استخراج محتوى المصادر",
+        "userRequest": "استخراج المحتوى",
+        "constraints": {},
+        "inputs": {
+            "artifacts": urls,
+            "inlineData": {},
+            "sharedStatePath": "runtime/runs/runtime-run/state/workflow-state.json"
+        },
+        "execution": {"attempt": 1, "timeoutSeconds": 180},
+        "trace": {
+            "createdAt": "2026-03-12T00:00:00Z",
+            "createdBy": "search-manager-agent",
+            "correlationId": "runtime-run"
+        }
+    }
+    input_data = json.dumps(envelope, ensure_ascii=False)
 
     try:
         process = await asyncio.create_subprocess_exec(

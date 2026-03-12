@@ -42,11 +42,34 @@ async def run_search_scout(
         "additionalInstructions": "ركّز على المصادر الموثوقة والأكاديمية"
     }
 
-    input_json = json.dumps({"searchPlan": search_plan}, ensure_ascii=False)
+    envelope = {
+        "protocolVersion": "research-task-envelope/v1",
+        "runId": "runtime-run",
+        "taskId": "search-scout-task",
+        "workflowStage": "search",
+        "sender": "SearchManager",
+        "targetAgent": "SearchScout",
+        "objective": objective,
+        "userRequest": topic,
+        "constraints": {"timeFrame": time_frame, "geographicScope": geographic_scope},
+        "inputs": {
+            "artifacts": [],
+            "inlineData": {"searchPlan": search_plan},
+            "sharedStatePath": "runtime/runs/runtime-run/state/workflow-state.json"
+        },
+        "execution": {"attempt": 1, "timeoutSeconds": 120},
+        "trace": {
+            "createdAt": "2026-03-12T00:00:00Z",
+            "createdBy": "search-manager-agent",
+            "correlationId": "runtime-run"
+        }
+    }
+
+    input_json = json.dumps(envelope, ensure_ascii=False)
 
     try:
         process = await asyncio.create_subprocess_exec(
-            "npm", "run", "dev",
+            "npm", "run", "start",
             stdin=asyncio.subprocess.PIPE,
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,

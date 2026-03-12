@@ -31,23 +31,44 @@ async def run_report_drafting(
     Returns:
         JSON string يحتوي على FinalReport (title, executiveSummary, tableOfContents, body, bibliography)
     """
-    raw_input = {
-        "topic": topic,
-        "data": data,
-        "sources": sources,
-        "reportType": report_type,
-        "targetAudience": target_audience,
-        "languageLevel": language_level,
-        "citationFormat": citation_format,
-        "outputFormat": output_format,
-        "additionalInstructions": additional_instructions
+    envelope = {
+        "protocolVersion": "research-task-envelope/v1",
+        "runId": "runtime-run",
+        "taskId": "report-drafting-task",
+        "workflowStage": "draft",
+        "sender": "SearchManager",
+        "targetAgent": "ReportDrafter",
+        "objective": topic,
+        "userRequest": "صياغة التقرير النهائي",
+        "constraints": {
+            "reportType": report_type,
+            "targetAudience": target_audience,
+            "languageLevel": language_level,
+            "citationFormat": citation_format,
+            "outputFormat": output_format
+        },
+        "inputs": {
+            "artifacts": [],
+            "inlineData": {
+                "data": data,
+                "sources": sources,
+                "additionalInstructions": additional_instructions
+            },
+            "sharedStatePath": "runtime/runs/runtime-run/state/workflow-state.json"
+        },
+        "execution": {"attempt": 1, "timeoutSeconds": 240},
+        "trace": {
+            "createdAt": "2026-03-12T00:00:00Z",
+            "createdBy": "search-manager-agent",
+            "correlationId": "runtime-run"
+        }
     }
 
-    input_json = json.dumps({"rawInput": raw_input}, ensure_ascii=False)
+    input_json = json.dumps(envelope, ensure_ascii=False)
 
     try:
         process = await asyncio.create_subprocess_exec(
-            "npm", "run", "dev",
+            "npm", "run", "start",
             stdin=asyncio.subprocess.PIPE,
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,

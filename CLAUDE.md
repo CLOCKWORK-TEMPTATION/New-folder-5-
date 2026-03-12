@@ -58,7 +58,19 @@ cp .env.example .env   # ثم أضف OPENAI_API_KEY
 
 python -m src.main --query "سؤالك هنا"
 python -m src.main --query "سؤالك" --model gpt-4o
+python -m src.main --readiness
 ```
+
+### العقد الموحد بين الوكلاء (Envelope V1)
+
+- الإصدار: `research-task-envelope/v1`
+- المسار المشترك: `shared/types` + `shared/validators`
+- الوكلاء الأربعة تدعم الإدخال عبر:
+  - stdin (JSON envelope)
+  - `--envelope-path=<path>`
+- المخرجات الموحدة في جميع الوكلاء:
+  - `metadata`
+  - `results`
 
 ### تشغيل النظام كاملاً
 

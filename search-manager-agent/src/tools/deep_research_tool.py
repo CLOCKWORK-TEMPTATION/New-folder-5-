@@ -1,6 +1,7 @@
 import json
 import asyncio
 import os
+import tempfile
 from src.config import DEEP_RESEARCH_DIR
 
 
@@ -24,13 +25,36 @@ async def run_deep_research(
     Returns:
         محتوى التقرير النهائي بصيغة Markdown مع الحقائق والتناقضات المكتشفة
     """
+    envelope = {
+        "protocolVersion": "research-task-envelope/v1",
+        "runId": "runtime-run",
+        "taskId": "deep-research-task",
+        "workflowStage": "analyze",
+        "sender": "SearchManager",
+        "targetAgent": "DeepResearcher",
+        "objective": "تحليل المخرجات والتحقق من الثغرات",
+        "userRequest": query,
+        "constraints": {"depth": depth, "freshness": freshness},
+        "inputs": {
+            "artifacts": [],
+            "inlineData": {"maxSources": max_sources, "minCredibility": min_credibility},
+            "sharedStatePath": "runtime/runs/runtime-run/state/workflow-state.json"
+        },
+        "execution": {"attempt": 1, "timeoutSeconds": 300},
+        "trace": {
+            "createdAt": "2026-03-12T00:00:00Z",
+            "createdBy": "search-manager-agent",
+            "correlationId": "runtime-run"
+        }
+    }
+
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False, encoding="utf-8") as temp:
+        json.dump(envelope, temp, ensure_ascii=False)
+        temp_path = temp.name
+
     cmd = [
         "npm", "run", "dev", "--",
-        "--query", query,
-        "--depth", depth,
-        "--freshness", freshness,
-        "--max-sources", str(max_sources),
-        "--min-credibility", str(min_credibility)
+        "--envelope-path", temp_path
     ]
 
     try:
@@ -60,3 +84,6 @@ async def run_deep_research(
         return json.dumps({"error": "Deep research timed out after 300 seconds"})
     except Exception as e:
         return json.dumps({"error": f"Deep research error: {str(e)}"})
+    finally:
+        if 'temp_path' in locals() and os.path.exists(temp_path):
+            os.remove(temp_path)

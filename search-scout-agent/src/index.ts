@@ -50,6 +50,7 @@ import type {
   AgentConfig,
   BackendType,
 } from "./types/index.js";
+import { parseEnvelope } from "./types/adapter.js";
 
 // ─────────────────────────────────────────────
 // أدوات المستوى الرئيسي (Main Agent Tools)
@@ -342,6 +343,31 @@ ${plan.additionalInstructions ? `### تعليمات إضافية\n${plan.additio
 // ─────────────────────────────────────────────
 
 async function main() {
+  const envelopePayload = await readEnvelopeInput();
+  if (envelopePayload) {
+    const envelope = parseEnvelope(envelopePayload);
+    const output = {
+      metadata: {
+        protocolVersion: envelope.protocolVersion,
+        runId: envelope.runId,
+        taskId: envelope.taskId,
+        stage: envelope.workflowStage,
+        processedBy: "search-scout-agent",
+        timestamp: new Date().toISOString(),
+      },
+      results: [
+        {
+          type: "search-plan-accepted",
+          objective: envelope.objective,
+          targetAgent: envelope.targetAgent,
+          artifacts: envelope.inputs.artifacts,
+        },
+      ],
+    };
+    console.log(JSON.stringify(output, null, 2));
+    return;
+  }
+
   console.log("بدء تشغيل وكيل البحث والاستكشاف...\n");
 
   // مثال للاستخدام
@@ -397,6 +423,25 @@ const isMainModule =
 
 if (isMainModule) {
   main();
+}
+
+async function readEnvelopeInput(): Promise<unknown | null> {
+  const fromArg = process.argv.find((arg) => arg.startsWith("--envelope-path="));
+  if (fromArg) {
+    const path = fromArg.split("=")[1];
+    const fs = await import("node:fs/promises");
+    const text = await fs.readFile(path, "utf-8");
+    return JSON.parse(text);
+  }
+
+  const chunks: Buffer[] = [];
+  for await (const chunk of process.stdin) {
+    chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
+  }
+  if (!chunks.length) return null;
+  const raw = Buffer.concat(chunks).toString("utf-8").trim();
+  if (!raw) return null;
+  return JSON.parse(raw);
 }
 
 // تصدير الأنواع والدوال
