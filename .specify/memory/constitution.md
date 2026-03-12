@@ -1,50 +1,120 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+# Multi-Agent Deep Research System Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Architectural Truth (الصدق المعماري) — NON-NEGOTIABLE
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+المنسق يعمل بـ `AutoGen` (Python). الوكلاء المنفذون يعملون بـ `deepagents` + `LangChain` (TypeScript). هذا الفصل المعماري غير قابل للتغيير إلا بطلب صريح من المستخدم.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+- لا يجوز وصف النظام بأنه "جاهز بالكامل" إذا لم يكن كذلك فعلاً.
+- أي فجوة بين الواقع والتوثيق تُعلن صراحةً ولا تُخفى.
+- التوثيق يعكس السلوك الفعلي — لا المأمول.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### II. Contract Unity (وحدة العقد التنفيذي)
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+كل وكيل يستقبل **غلاف مهمة موحداً واحداً** (`research-task-envelope/v1`) ويعيد **غلاف نتيجة موحداً واحداً**. لا نص حر، لا مسارات خفية.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+- المنسق لا يُرسل نصاً حراً بديلاً عن الغلاف.
+- الوكيل لا يفسر مدخلات من بيئته الداخلية كبديل عن الغلاف.
+- أي مدخل قديم يُحوَّل أولاً إلى الغلاف عبر طبقة تكييف واضحة.
+- تغيير شكل الحمولة الداخلية غير مسموح دون رفع `protocolVersion`.
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+### III. Shared State Integrity (سلامة الحالة المشتركة)
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+المصدر الوحيد للحالة المشتركة هو `runtime/runs/<run-id>/state/`. كل انتقال بين مرحلتين يمر عبر حالة مشتركة قابلة للتتبع عبر `runId` واحد.
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+- المنسق وحده يملك تحديث `workflow-state.json`.
+- كل وكيل يكتب داخل مجلد مرحلته فقط (`01-search/`, `02-extraction/`, `03-analysis/`, `04-report/`).
+- ممنوع على أي وكيل تعديل ملفات مرحلة سابقة.
+- التمرير بين المراحل عبر مراجع الأثر (artifact paths)، لا نسخ النصوص الكاملة.
+
+### IV. Separation of Responsibilities (فصل المسؤوليات)
+
+| الطرف | المسؤولية الحصرية |
+|---|---|
+| المنسق (`search-manager-agent`) | التخطيط، الترتيب، إعادة المحاولة، قرار جولة جديدة، إعلان `RESEARCH_COMPLETE` |
+| وكيل البحث (`search-scout-agent`) | جمع النتائج وترتيبها فقط |
+| وكيل الاستخراج (`content-extractor-agent`) | جلب المحتوى وتطبيعه فقط |
+| وكيل التحليل (`deep-research-analysis-agent`) | تقييم الموثوقية واستخراج الحقائق والثغرات فقط |
+| وكيل الصياغة (`report-drafting-agent`) | كتابة التقرير النهائي فقط |
+
+وجود ملف تقرير داخل وكيل التحليل لا يمنحه حق التسليم النهائي. التسليم يظل مسؤولية `report-drafting-agent` بعد موافقة المنسق.
+
+### V. Build & Runtime Readiness (جاهزية البناء والتشغيل)
+
+لا يُعدّ أي مشروع "جاهزاً" إلا إذا حقق **جميع** البنود:
+
+| # | المعيار |
+|---|---|
+| B1 | التثبيت ينجح من ملفات الاعتماديات الخاصة بالمشروع فقط |
+| B2 | أمر فحص الأنواع (`typecheck`) متاح ويعمل |
+| B3 | أمر البناء يعمل دون أدوات عالمية غير موثقة |
+| B4 | أمر التشغيل يقرأ العقد الموحد (لا بيانات تجريبية) |
+| B5 | ملف `.env.example` محدث ويغطي جميع المتغيرات |
+| B6 | المسار الإنتاجي لا يعتمد على أمثلة صلبة في `main()` |
+| B7 | نتيجة التنفيذ تعيد رمز خروج صحيحاً ومخرجاً موحداً |
+
+## Prohibitions (المحظورات — خطوط حمراء)
+
+### خطوط حمراء مطلقة
+- ممنوع تخاطب وكيل منفذ مع وكيل منفذ آخر مباشرة — كل شيء عبر المنسق.
+- ممنوع أن يكون النص الحر هو العقد المستقر بين المنسق والوكيل.
+- ممنوع استخدام بيانات مثال ثابتة في المسار الإنتاجي.
+- ممنوع إعلان جاهزية بناء لمشروع لم يجتز أوامر التحقق فعلاً.
+- ممنوع تغيير بنية الحالة المشتركة دون توثيق ورفع `protocolVersion`.
+
+### محظورات تنفيذية
+- منع إضافة مسار استدعاء خاص بوكيل واحد لا يخدم البقية.
+- منع تعدد أنماط الإدخال (`stdin` لوكيل + CLI args لآخر + بيانات صلبة لثالث) كحل دائم.
+- منع كتابة الآثار داخل مجلدات وقت تشغيل خاصة بكل وكيل إذا كانت الرحلة تحتاج تتبعاً مركزياً.
+- منع الاعتماد على أدوات عالمية مثل `tsc` إذا لم تكن مثبتة ضمن المشروع أو مشغلة عبر `npx`.
+
+### محظورات توثيق
+- ممنوع وصف الاستدعاء بأنه شبكي إذا كان التنفيذ محلياً فقط.
+- ممنوع وصف العامل بأنه "مكتمل" إذا كان يحتاج طبقة تكييف غير منفذة.
+- ممنوع استخدام أوصاف عامة مثل "موحد" أو "جاهز" دون معيار قابل للفحص.
+
+## Execution Workflow (سير التنفيذ وبوابات العبور)
+
+### تصنيف التعقيد
+
+| المستوى | التعريف | المراحل |
+|---|---|---|
+| **بسيطة** | تعديل توثيقي أو إصلاح موضعي داخل وكيل واحد | استيعاب → تنفيذ → تحقق → تسليم |
+| **متوسطة** | توحيد نقطة دخول وكيل أو إصلاح بناء مشروع | استيعاب → تشخيص → تخطيط → تنفيذ → تحقق → تسليم |
+| **معقدة** | تغيير يمس المنسق + أكثر من وكيل، أو بروتوكول الحالة | جميع المراحل كاملة |
+
+### ترتيب التنفيذ الملزم (للمهام المعقدة)
+1. تثبيت العقد التنفيذي الموحد
+2. تثبيت عقد الحالة المشتركة
+3. توحيد نقاط الدخول في الوكلاء الأربعة
+4. تكييف المنسق ليتحدث بالعقد الموحد فقط
+5. إصلاح البناء والاعتماديات لكل مشروع
+6. توثيق الفجوة المتبقية والتحقق النهائي
+
+ممنوع عكس هذا الترتيب إلا بسبب تقني موثق.
+
+### بوابات التحقق الذاتي (قبل إعلان الاكتمال)
+- [ ] هل بقي `AutoGen` في طبقة المنسق فقط؟
+- [ ] هل بقي `deepagents`/`LangChain` داخل الوكلاء فقط؟
+- [ ] هل يملك كل وكيل مدخلاً موحداً فعلياً؟
+- [ ] هل يملك كل وكيل مخرجاً موحداً فعلياً؟
+- [ ] هل يوجد `runId` واحد يربط الرحلة كاملة؟
+- [ ] هل يكتب كل وكيل داخل مجلد مرحلته فقط؟
+- [ ] هل نجح البناء لكل مشروع ضمن أوامره الرسمية؟
+- [ ] هل التوثيق يعكس الواقع الحالي بلا مبالغة؟
+
+### بروتوكولات الفشل
+- **فشل البناء**: لا تُمنح جاهزية كاملة. تُسجَّل الحالة في مصفوفة الجاهزية. لا يُوصَف العطل بأنه "تفصيلي" إذا كان يمنع التشغيل.
+- **فشل وكيل أثناء الرحلة** (`failed`/`partial`/`needs_more_research`): المنسق وحده يقرر إعادة المحاولة، ويزيد رقم الجولة، ويحدث الحالة المشتركة.
+- **إعلان العجز**: اسم المشروع → الأمر الفاشل → السبب النصي → أثره على الرحلة الكاملة.
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+- الدستور يسود على جميع الممارسات الأخرى.
+- أي تعديل يتطلب: (1) ما تغيّر، (2) لماذا، (3) هل كسر التوافقية، (4) التاريخ، (5) هل يتطلب رفع `protocolVersion`.
+- النسخ الدلالية: زيادة طفيفة للحقول الاختيارية/التوضيحات — زيادة رئيسية لأي تغيير في حقل إلزامي أو معنى حالة أو بنية مجلد.
+- التراتبية عند التعارض (الأعلى يسود): الصدق المعماري (0) → وحدة العقد (1) → سلامة الحالة (2) → جاهزية البناء (3) → التفضيلات الأسلوبية (4).
+- أي تغيير في شكل الغلاف أو الحالة المشتركة أو أوامر البناء أو متغيرات البيئة يجب أن ينعكس فوراً في هذا الدستور.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Version**: 2.1.0 | **Ratified**: 2026-03-12 | **Last Amended**: 2026-03-12
